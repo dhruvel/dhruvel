@@ -1,18 +1,18 @@
 # 💫 About Me:
-🤖 Robotics Software Developer — ROS/ROS2, sensor fusion, and autonomous navigation<br>
+🤖 Robotics Software Developer: ROS/ROS2, sensor fusion, and autonomous navigation<br>
 🔭 Currently building a full SLAM stack (RTABMap on ROS 2 Jazzy) with LiDAR + RGBD sensor fusion<br>
 👀 Open to Robotics, Embedded Systems, and Software Developer roles in Canada<br>
 👯 Looking to collaborate on autonomous robots, drones, and underwater mobile vehicles<br>
 🤝 Open to work involving ArduPilot / ArduSub frameworks<br>
 💬 Ask me about SLAM, sensor fusion, or autonomous navigation<br>
-🎓 BSc Computer Science (Distinction) — AI & Machine Learning concentration
+🎓 BSc Computer Science (Distinction): AI & Machine Learning concentration
 
 ## 🌐 Socials:
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/dhruvel) [![email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:dhruvsagar.pro@gmail.com) [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)](https://github.com/dhruvel)
 
 ## 🚀 Featured Project
 
-**[rtabmap_ros2_ws](https://github.com/dhruvel/rtabmap_ros2_ws)** — Real-time SLAM system on ROS 2 Jazzy, fusing an LDROBOT D500 LiDAR with an ASCAM HP60C RGBD camera for mapping and localization.
+**[rtabmap_ros2_ws](https://github.com/dhruvel/rtabmap_ros2_ws)**: Real-time SLAM system on ROS 2 Jazzy, fusing an LDROBOT D500 LiDAR with an ASCAM HP60C RGBD camera for mapping and localization.
 
 ## 🔧 Core Stack
 
