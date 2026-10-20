@@ -1,0 +1,69 @@
+# Redeploys dhruvel-portfolio.vercel.app when the resume changes, so the
+# site's /resume download serves the new PDF right away instead of within an hour.
+#
+# Setup (once):
+#   1. Vercel > dhruvel-portfolio > Settings > Git > Deploy Hooks: create a hook for branch `main`.
+#   2. GitHub > dhruvel/dhruvel > Settings > Secrets and variables > Actions:
+#      add a repository secret named VERCEL_DEPLOY_HOOK with the hook URL.
+
+name: Redeploy portfolio on resume update
+
+on:
+  push:
+    branches: [main]
+    paths: [DhruvSagar_Resume.pdf]
+  # Adds a "Run workflow" button on the Actions tab to trigger it by hand
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Check the resume is a valid PDF
+        run: |
+          file="DhruvSagar_Resume.pdf"
+          if [ ! -f "$file" ]; then
+            echo "::error::$file is missing. The portfolio's Resume button would break."
+            exit 1
+          fi
+          if [ "$(head -c 5 "$file")" != "%PDF-" ]; then
+            echo "::error::$file is not a PDF."
+            exit 1
+          fi
+          echo "$file looks good ($(stat -c %s "$file") bytes)."
+
+      # raw.githubusercontent.com caches files for up to 5 minutes. Wait until it serves the
+      # new PDF, or the redeploy would fetch the old one.
+      - name: Wait for GitHub's raw file cache to update
+        run: |
+          want="$(sha256sum DhruvSagar_Resume.pdf | cut -d' ' -f1)"
+          url="https://raw.githubusercontent.com/${{ github.repository }}/main/DhruvSagar_Resume.pdf"
+          for attempt in $(seq 1 20); do
+            got="$(curl --fail --silent --show-error "$url" | sha256sum | cut -d' ' -f1)"
+            if [ "$got" = "$want" ]; then
+              echo "Raw URL serves the new resume."
+              exit 0
+            fi
+            echo "Attempt $attempt: raw URL still serves the old file, waiting 20 s..."
+            sleep 20
+          done
+          echo "::error::Raw URL still serves the old resume after about 7 minutes."
+          exit 1
+
+      - name: Trigger the Vercel deploy hook
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
+            echo "::warning::VERCEL_DEPLOY_HOOK secret is not set, so no redeploy was triggered. The site still picks up the new resume within an hour."
+            exit 0
+          fi
+          curl --fail --silent --show-error -X POST "$VERCEL_DEPLOY_HOOK"
+          echo "Redeploy triggered. The new resume will be live in a couple of minutes."
